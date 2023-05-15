@@ -20,7 +20,41 @@ async function main() {
                 name: 'food',
                 description: 'the type of food',
                 type: 3,
-                required: true
+                required: true,
+                choices: [
+                    {
+                        name: 'Cake',
+                        value: 'cake'
+                    },
+                    {
+                        name: 'Hamburguer',
+                        value: 'hamburguer'
+                    },
+                    {
+                        name: 'Ice Cream',
+                        value: 'ice cream'
+                    },
+                ]
+            },
+            {
+                name: 'drink',
+                description: 'type of drink',
+                type: 3,
+                required: true,
+                choices: [
+                    {
+                        name: 'Juice',
+                        value: 'juice'
+                    },
+                    {
+                        name: 'Coca Cola',
+                        value: 'coca cola'
+                    },
+                    {
+                        name: 'Water',
+                        value: 'water'
+                    },
+                ]
             }
         ],
     }];
@@ -30,7 +64,6 @@ async function main() {
       await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), {
         body: commands,
       });
-      client.login(TOKEN);
     } 
     
     catch (err) {
@@ -43,7 +76,9 @@ async function main() {
 // Interacting with the user via slash commands
 client.on('interactionCreate', (interaction) => {
     if(interaction.isChatInputCommand()) {
-        interaction.reply(`You ordered a ${interaction.options.get('food').value}`);
+       const food = interaction.options.get('food').value;
+       const drink = interaction.options.get('drink').value;
+       interaction.reply(`You ordered ${food} and ${drink}`);
     };
 });
 
@@ -58,3 +93,6 @@ client.on('messageCreate', (message) => {
         message.reply('Sorry! I have ran out of coffee already! :(');
     };
 });
+
+// Logging the bot in
+client.login(TOKEN);
