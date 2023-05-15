@@ -10,18 +10,19 @@ const GUILD_ID = process.env.GUILD_ID;
 
 const rest = new REST({ version: '10' }).setToken(TOKEN);
 
-client.on('interactionCreate', (interaction) => {
-    if(interaction.isChatInputCommand()) {
-        console.log('From discord input');
-        interaction.reply('Hey there!!!');
-    };
-});
-
 // Creating a help slash command 
 async function main() {
     const commands = [{
         name: 'order',
-        description: 'Order something'
+        description: 'Order something',
+        options: [
+            {
+                name: 'food',
+                description: 'the type of food',
+                type: 3,
+                required: true
+            }
+        ],
     }];
 
     try {
@@ -38,6 +39,14 @@ async function main() {
   };
   
   main();
+
+// Interacting with the user via slash commands
+client.on('interactionCreate', (interaction) => {
+    if(interaction.isChatInputCommand()) {
+        interaction.reply(`You ordered a ${interaction.options.get('food').value}`);
+    };
+});
+
 // Showing the client's tag
 client.on('ready', (client) => {
     console.log(`${client.user.tag} is online. ✔️ `);
