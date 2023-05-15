@@ -1,6 +1,7 @@
 import { config } from 'dotenv';
 import { Client, Routes } from 'discord.js';
-import { REST }   from '@discordjs/rest'
+import { REST } from '@discordjs/rest';
+import { SlashCommandBuilder} from '@discordjs/builders';
 config(); // // Grabbing environment variables
 const client = new Client({ intents: ['Guilds', 'GuildMessages', 'MessageContent']});
 
@@ -12,53 +13,46 @@ const rest = new REST({ version: '10' }).setToken(TOKEN);
 
 // Creating a help slash command 
 async function main() {
-    const commands = [{
-        name: 'order',
-        description: 'Order something',
-        options: [
-            {
-                name: 'food',
-                description: 'the type of food',
-                type: 3,
-                required: true,
-                choices: [
-                    {
-                        name: 'Cake',
-                        value: 'cake'
-                    },
-                    {
-                        name: 'Hamburguer',
-                        value: 'hamburguer'
-                    },
-                    {
-                        name: 'Ice Cream',
-                        value: 'ice cream'
-                    },
-                ]
-            },
-            {
-                name: 'drink',
-                description: 'type of drink',
-                type: 3,
-                required: true,
-                choices: [
-                    {
-                        name: 'Juice',
-                        value: 'juice'
-                    },
-                    {
-                        name: 'Coca Cola',
-                        value: 'coca cola'
-                    },
-                    {
-                        name: 'Water',
-                        value: 'water'
-                    },
-                ]
-            }
-        ],
-    }];
-
+    const orderCommand = new SlashCommandBuilder()
+    .setName('order')
+    .setDescription('Order your favorite meal!')
+    .addStringOption((option) => 
+        option
+        .setName('food')
+        .setDescription('Select your favorite food')
+        .setRequired(true)
+        .setChoices({
+            name: 'Cake', 
+            value: 'cake'
+        }, 
+        {
+            name: 'Pizza', 
+            value: 'pizza'
+        }, 
+        {
+            name: 'Hamburguer', 
+            value: 'hamburguer'
+        })
+    ).addStringOption((option) => 
+    option
+    .setName('drink')
+    .setDescription('Select your favorite drink')
+    .setRequired(true)
+    .setChoices({
+        name: 'Coca Cola', 
+        value: 'coca cola'
+    }, 
+    {
+        name: 'Juice', 
+        value: 'juice'
+    }, 
+    {
+        name: 'Water', 
+        value: 'water'
+    })
+)
+       
+    const commands = [orderCommand.toJSON()];
     try {
       console.log('Started refreshing application (/) commands.');
       await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), {
