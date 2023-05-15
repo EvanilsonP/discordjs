@@ -10,11 +10,18 @@ const GUILD_ID = process.env.GUILD_ID;
 
 const rest = new REST({ version: '10' }).setToken(TOKEN);
 
+client.on('interactionCreate', (interaction) => {
+    if(interaction.isChatInputCommand()) {
+        console.log('From discord input');
+        interaction.reply('Hey there!!!');
+    };
+});
+
 // Creating a help slash command 
 async function main() {
     const commands = [{
-        name: 'tutorialhelp',
-        description: 'Help tutorial command'
+        name: 'order',
+        description: 'Order something'
     }];
 
     try {
