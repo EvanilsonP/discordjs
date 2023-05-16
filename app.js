@@ -1,7 +1,9 @@
 import { config } from 'dotenv';
 import { Client, Routes } from 'discord.js';
 import { REST } from '@discordjs/rest';
-import { SlashCommandBuilder} from '@discordjs/builders';
+import rolesCommand from './commands/roles.js';
+import orderCommand from './commands/order.js';
+
 config(); // // Grabbing environment variables
 const client = new Client({ intents: ['Guilds', 'GuildMessages', 'MessageContent']});
 
@@ -13,54 +15,15 @@ const rest = new REST({ version: '10' }).setToken(TOKEN);
 
 // Creating a help slash command 
 async function main() {
-    const orderCommand = new SlashCommandBuilder()
-    .setName('order')
-    .setDescription('Order your favorite meal!')
-    .addStringOption((option) => 
-        option
-        .setName('food')
-        .setDescription('Select your favorite food')
-        .setRequired(true)
-        .setChoices({
-            name: 'Cake', 
-            value: 'cake'
-        }, 
-        {
-            name: 'Pizza', 
-            value: 'pizza'
-        }, 
-        {
-            name: 'Hamburguer', 
-            value: 'hamburguer'
-        })
-    ).addStringOption((option) => 
-    option
-    .setName('drink')
-    .setDescription('Select your favorite drink')
-    .setRequired(true)
-    .setChoices({
-        name: 'Coca Cola', 
-        value: 'coca cola'
-    }, 
-    {
-        name: 'Juice', 
-        value: 'juice'
-    }, 
-    {
-        name: 'Water', 
-        value: 'water'
-    })
-)
-       
-    const commands = [orderCommand.toJSON()];
+    const commands = [ orderCommand, rolesCommand];
+
     try {
-      console.log('Started refreshing application (/) commands.');
-      await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), {
-        body: commands,
+        console.log('Started refreshing application (/) commands.');
+        await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), {
+        body: commands
       });
-    } 
-    
-    catch (err) {
+
+    } catch (err) {
       console.log(err);
     }
   };
