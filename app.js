@@ -1,8 +1,11 @@
 import { config } from 'dotenv';
 import { Client, Routes } from 'discord.js';
 import { REST } from '@discordjs/rest';
+
 import rolesCommand from './commands/roles.js';
 import orderCommand from './commands/order.js';
+import usersCommand from './commands/user.js';
+import channelsCommand from './commands/channel.js';
 
 config(); // // Grabbing environment variables
 const client = new Client({ intents: ['Guilds', 'GuildMessages', 'MessageContent']});
@@ -15,7 +18,7 @@ const rest = new REST({ version: '10' }).setToken(TOKEN);
 
 // Creating a help slash command 
 async function main() {
-    const commands = [ orderCommand, rolesCommand];
+    const commands = [ orderCommand, rolesCommand, usersCommand, channelsCommand ];
 
     try {
         console.log('Started refreshing application (/) commands.');
