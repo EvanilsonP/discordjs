@@ -7,6 +7,7 @@ import orderCommand from './commands/order.js';
 import usersCommand from './commands/user.js';
 import channelsCommand from './commands/channel.js';
 import banCommand from './commands/ban.js';
+import { ActionRowBuilder, SelectMenuBuilder } from '@discordjs/builders';
 
 config(); // // Grabbing environment variables
 const client = new Client({ intents: ['Guilds', 'GuildMessages', 'MessageContent']});
@@ -37,9 +38,20 @@ async function main() {
 // Interacting with the user via slash commands
 client.on('interactionCreate', (interaction) => {
     if(interaction.isChatInputCommand()) {
-       const food = interaction.options.get('food').value;
-       const drink = interaction.options.get('drink').value;
-       interaction.reply(`You ordered ${food} and ${drink}`);
+      if(interaction.commandName === 'order') {
+        console.log('Order command');
+        console.log(interaction);
+        const actionRowComponent = new ActionRowBuilder().setComponents(
+          new SelectMenuBuilder().setCustomId('food_options').setOptions([
+            { label: 'Cake', value: 'cake' },
+            { label: 'Pizza', value: 'pizza' },
+            { label: 'Sushi', value: 'sushi' }
+          ])
+        )
+        interaction.reply({
+          components: [actionRowComponent.toJSON()]
+        })
+      }
     };
 });
 
