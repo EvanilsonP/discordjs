@@ -1,5 +1,5 @@
 import { config } from 'dotenv';
-import { Client, Routes } from 'discord.js';
+import { Client, ModalBuilder, Routes, TextInputStyle } from 'discord.js';
 import { REST } from '@discordjs/rest';
 
 import rolesCommand from './commands/roles.js';
@@ -7,7 +7,9 @@ import orderCommand from './commands/order.js';
 import usersCommand from './commands/user.js';
 import channelsCommand from './commands/channel.js';
 import banCommand from './commands/ban.js';
-import { ActionRowBuilder, SelectMenuBuilder } from '@discordjs/builders';
+import registerCommand from './commands/register.js';
+
+import { ActionRowBuilder, SelectMenuBuilder, TextInputBuilder } from '@discordjs/builders';
 
 config(); // // Grabbing environment variables
 const client = new Client({ intents: ['Guilds', 'GuildMessages', 'MessageContent']});
@@ -20,7 +22,7 @@ const rest = new REST({ version: '10' }).setToken(TOKEN);
 
 // Creating a help slash command 
 async function main() {
-    const commands = [ orderCommand, rolesCommand, usersCommand, channelsCommand, banCommand ];
+    const commands = [ orderCommand, rolesCommand, usersCommand, channelsCommand, banCommand, registerCommand ];
 
     try {
         console.log('Started refreshing application (/) commands.');
@@ -56,8 +58,29 @@ client.on('interactionCreate', (interaction) => {
           ]),
         )
         interaction.reply({
-          components: [actionRowComponent.toJSON(), actionRowDrinkOptions.toJSON() ]
+          components: [actionRowComponent.toJSON(), actionRowDrinkOptions.toJSON()]
         })
+      }else if(interaction.commandName === 'register') {
+        const modal = new ModalBuilder()
+        .setTitle('Register user form')
+        .setCustomId('registerUserModal')
+        .setComponents(
+          new ActionRowBuilder().setComponents(new TextInputBuilder)
+          .setLabel('username')
+          .setCustomId('username')
+          .setStyle(TextInputStyle.Short)
+        )
+        new ActionRowBuilder().setComponents(new TextInputBuilder)
+          .setLabel('email')
+          .setCustomId('email')
+          .setStyle(TextInputStyle.Short)
+
+          new ActionRowBuilder().setComponents(new TextInputBuilder)
+          .setLabel('comment')
+          .setCustomId('comment')
+          .setStyle(TextInputStyle.Short)
+
+        interaction.showModal(modal);
       }
     } else if(interaction.isStringSelectMenu()) {
       if(interaction.customId === 'food_options') {
