@@ -1,5 +1,5 @@
 import { config } from 'dotenv';
-import { Client, ModalBuilder, Routes, TextInputStyle } from 'discord.js';
+import { Client, InteractionType, ModalBuilder, Routes, TextInputStyle } from 'discord.js';
 import { REST } from '@discordjs/rest';
 
 import rolesCommand from './commands/roles.js';
@@ -87,6 +87,13 @@ client.on('interactionCreate', (interaction) => {
 
       } else if(interaction.customId === 'drink_options') {
 
+      }
+    } else if(interaction.type === InteractionType.ModalSubmit) {
+      console.log('Modal submitted...');
+      console.log(interaction);
+      if(interaction.customId === 'registerUserModel') {
+        console.log(interaction.fields.getTextInputValue('username'))
+        interaction.reply('You submitted your details!')
       }
     }
 });
