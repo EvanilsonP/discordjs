@@ -1,5 +1,5 @@
 import { config } from 'dotenv';
-import { Client, InteractionType, ModalBuilder, Routes, TextInputStyle } from 'discord.js';
+import { ButtonStyle, Client, InteractionType, ModalBuilder, Routes, TextInputStyle } from 'discord.js';
 import { REST } from '@discordjs/rest';
 
 import rolesCommand from './commands/roles.js';
@@ -8,8 +8,9 @@ import usersCommand from './commands/user.js';
 import channelsCommand from './commands/channel.js';
 import banCommand from './commands/ban.js';
 import registerCommand from './commands/register.js';
+import buttonCommand from './commands/button.js';
 
-import { ActionRowBuilder, SelectMenuBuilder, TextInputBuilder } from '@discordjs/builders';
+import { ActionRowBuilder, ButtonBuilder, SelectMenuBuilder, TextInputBuilder } from '@discordjs/builders';
 
 config(); // // Grabbing environment variables
 const client = new Client({ intents: ['Guilds', 'GuildMessages', 'MessageContent']});
@@ -22,7 +23,7 @@ const rest = new REST({ version: '10' }).setToken(TOKEN);
 
 // Creating a help slash command 
 async function main() {
-    const commands = [ orderCommand, rolesCommand, usersCommand, channelsCommand, banCommand, registerCommand ];
+    const commands = [ orderCommand, rolesCommand, usersCommand, channelsCommand, banCommand, registerCommand, buttonCommand];
 
     try {
         console.log('Started refreshing application (/) commands.');
@@ -79,8 +80,31 @@ client.on('interactionCreate', (interaction) => {
           .setLabel('comment')
           .setCustomId('comment')
           .setStyle(TextInputStyle.Short)
+          
 
         interaction.showModal(modal);
+      } else if(interaction.commandName === 'button') {
+        interaction.reply({
+          content: 'button',
+          components: [
+            new ActionRowBuilder().setComponents(
+              new ButtonBuilder()
+              .setCustomId('button1')
+              .setLabel('Button 1')
+              .setStyle(ButtonStyle.Primary),
+
+              new ButtonBuilder()
+              .setCustomId('button2')
+              .setLabel('Button 2')
+              .setStyle(ButtonStyle.Primary),
+
+              new ButtonBuilder()
+              .setLabel('Discord js Docs')
+              .setLabel('https://discord.com/developers/docs/intro')
+              .setStyle(ButtonStyle.Primary)
+            )
+          ]
+        });
       }
     } else if(interaction.isStringSelectMenu()) {
       if(interaction.customId === 'food_options') {
@@ -102,6 +126,33 @@ client.on('interactionCreate', (interaction) => {
 client.on('ready', (client) => {
     console.log(`${client.user.tag} is online. ✔️ `);
 });
+
+client.on('messageCreate', async (m) => {
+  if(m.author.bot) return;
+
+  const sentMessage = await m.channel.send({
+    content: 'Hello, World',
+    components: [
+      new ActionRowBuilder().setComponents(
+        new ButtonBuilder()
+        .setCustomId('button1')
+        .setLabel('Button 1')
+        .setStyle(ButtonStyle.Primary),
+
+        new ButtonBuilder()
+        .setCustomId('button2')
+        .setLabel('Button 2')
+        .setStyle(ButtonStyle.Primary),
+
+        new ButtonBuilder()
+        .setLabel('Discord js Docs')
+        .setLabel('https://discord.com/developers/docs/intro')
+        .setStyle(ButtonStyle.Primary)
+      )
+    ]
+    
+  })
+})
 
 // Whenever a user types in the coffee message
 client.on('messageCreate', (message) => {
