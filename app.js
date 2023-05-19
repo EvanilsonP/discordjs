@@ -45,14 +45,27 @@ client.on('interactionCreate', (interaction) => {
           new SelectMenuBuilder().setCustomId('food_options').setOptions([
             { label: 'Cake', value: 'cake' },
             { label: 'Pizza', value: 'pizza' },
-            { label: 'Sushi', value: 'sushi' }
+            { label: 'Sushi', value: 'sushi' },
           ])
         )
+        const actionRowDrinkOptions = new ActionRowBuilder().setComponents(
+          new SelectMenuBuilder().setCustomId('drink_options').setOptions([
+            { label: 'Coca cola', value: 'coca cola' },
+            { label: 'Water', value: 'water' },
+            { label: 'Juice', value: 'juice' },
+          ]),
+        )
         interaction.reply({
-          components: [actionRowComponent.toJSON()]
+          components: [actionRowComponent.toJSON(), actionRowDrinkOptions.toJSON() ]
         })
       }
-    };
+    } else if(interaction.isStringSelectMenu()) {
+      if(interaction.customId === 'food_options') {
+
+      } else if(interaction.customId === 'drink_options') {
+
+      }
+    }
 });
 
 // Showing the client's tag
